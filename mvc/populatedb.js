@@ -49,7 +49,7 @@ function cuisineCreate(name, cb) {
             return;
         }
         console.log('New cuisine: ' + cuisine);
-        cuisines.push(cuisine);
+        cuisines.push(cuisine.name);
         cb(null, cuisine);
     });
 }
@@ -72,7 +72,7 @@ function createRestarantsCuisines(cb) {
             restaurantCreate('Ramen DANBO', cuisines[1], 3, 4.6, callback)
         },
         function (callback) {
-            restaurantCreate('Miku Vancouver', cuisines[2], 2, 4.4, callback)
+            restaurantCreate('Miku Vancouver', [cuisines[1],cuisines[2]], 2, 4.4, callback)
         }
     ]);
 }

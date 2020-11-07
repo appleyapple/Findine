@@ -13,7 +13,5 @@ cuisineModelSchema
     return '/catalog/cuisine' + this._id;
 });
 
-// compile model from schema
-// var cuisineModel = mongoose.model('cuisineModel', cuisineModelSchema);
 // export model
 module.exports = mongoose.model('cuisineModel', cuisineModelSchema);

@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 restaurantModelSchema = new Schema({
     _restaurantID: Schema.Types.ObjectId,
     name: { type: String, required: true, maxlength: 50 },
-    cuisine: [{ type: Schema.Types.ObjectId, ref: 'Cuisine', required: true }],
+    // cuisine: [{ type: Schema.Types.ObjectId, ref: 'Cuisine', required: true }], // reference to associated cuisine
+    cuisine: [{ type: String, required: true, maxlength: 50 }],
     // lat: { type: Decimal128, min: -90, max: 90, required: true },
     // lon: { type: Number, min: -180, max: 180, required: true },
     price: { type: Number, min: 1, max: 3, required: true },
@@ -20,8 +21,6 @@ restaurantModelSchema
     return '/catalog/restaurants' + this._id;
 });
 
-// compile model from schema
-// var restaurantModel = mongoose.model('restaurantModel', restaurantModelSchema);
 // export model
 module.exports = mongoose.model('restaurantModel', restaurantModelSchema);
 
