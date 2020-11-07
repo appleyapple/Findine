@@ -10,10 +10,14 @@ React // integrate react router dom
 Node.js
 
 ## install dependencies:
-> Findine\mvc> npm install
+```
+Findine\mvc> npm install
+```
 
 ## start devserver:
-> Findine\mvc> nodemon Findine
+```
+Findine\mvc> nodemon Findine
+```
 
 landing page: http://localhost:3000/
 
@@ -26,9 +30,9 @@ https://mongoosejs.com/docs/validation.html
 
 ## populate db with test data:
 DO NOT RUN IF DB IS ALREADY POPULATED
-
-> Findine\mvc> node populatedb mongodb+srv://admin:cmpt470@findine.mexlh.mongodb.net/findine?retryWrites=true&w=majority
-
+```
+Findine\mvc> node populatedb mongodb+srv://admin:cmpt470@findine.mexlh.mongodb.net/findine?retryWrites=true&w=majority
+```
 
 ## todo:
 serve restaurant list w/ parameters from a form
