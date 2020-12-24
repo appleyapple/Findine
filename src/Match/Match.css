@@ -1,0 +1,40 @@
+/* html {
+    overflow:scroll;
+}
+
+.match {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+h1 {
+    background-color:rgb(240, 138, 98);
+    border-radius: 25px;
+    border-style: solid;
+}
+
+.Card {
+    color: black;
+    background-color:rgb(240, 138, 98);
+    border-style: solid;
+
+    border-radius: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.FirstLeft {
+    width: 300px;
+    display:inline-block;
+}
+
+.FirstRight {
+    width: 300px;
+    display:inline-block;
+}
+
+.FirstLeft img {
+    max-height: 100%;
+    max-width: 100%;
+} */

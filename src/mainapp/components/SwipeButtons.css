@@ -1,0 +1,7 @@
+.swipeButtons {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    max-width: 200px;
+    padding: 25px;
+}
