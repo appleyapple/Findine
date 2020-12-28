@@ -70,6 +70,8 @@ exports.getLikeRestaurants= function(req, res, next) {
 exports.addLikeRestaurants= function(req, res, next) {
     var userName = req.body.userName;
     var restaurant = req.body.likedRestaurants;
+    // console.log(userName);
+    // console.log(restaurant);
 
     profiles.updateOne(
         { userName: userName},

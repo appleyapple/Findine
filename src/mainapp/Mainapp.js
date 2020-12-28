@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import './Mainapp.css';
 import NavbarPage from '../Navbar'
 import nullimg from './assets/passbutton.png';
 import RestaurantCards from './components/RestaurantCards';
 import SwipeButtons from './components/SwipeButtons';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+
+const async = require('async');
 
 const useStyles = () => ({
     root: {
@@ -25,25 +25,27 @@ class MainAppPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.indexer = this.indexer.bind(this);
+		this.getUser = this.getUser.bind(this);
 		this.getPref = this.getPref.bind(this);
 		this.getRestaurants = this.getRestaurants.bind(this);
+		this.setLikedRestaurants = this.setLikedRestaurants.bind(this);
 
-		// cancel fetch request; mem leak problem fix?
+		// clean up fetch request; mem leak problem fix?
 		this.controller = new AbortController();
 
         this.state = {
 			
-			// restaurant cards
+			// restaurants and filters
 			restaurants: [],
 			price: ['1', '2', '3', '4'],
 			liked: [],
-			numCards: 0,
-			cardIndex: 0,
 
 			// misc
 			loading: true,
 			loadingPref: true,
 			loadingUser: true,
+			numCards: 0,
+			cardIndex: 0,
 			userName: ''
 		};
 	}
@@ -56,15 +58,29 @@ class MainAppPage extends React.Component {
 		}));
 		return;
 	}
+	
+	// get current user using sessions
+	getUser(cb) {
+		fetch('/sessions/sessions')
+		.then(res => res.json())
+		.then(data => {
+			this.setState({ userName: data.userName });
+			this.setState({ loadingUser: false });
+			cb(null, data.userName);
+		});
+	}
 
+	// get list of liked restaurants (names only)
 	getLiked() {
 		var likedJSON = {};
+
+		// get list of restaurant names
 		var restaurantsCopy = this.state.restaurants.map((restaurant) => {
 			return restaurant['name'];
 		});
-		var likedCopy = [...this.state.liked, false];
 
-		// mask restaurant list to get liked restaurant names
+		// mask list of restaurant with liked (boolean) array to get liked restaurants
+		var likedCopy = [...this.state.liked, false];
 		var liked = restaurantsCopy.filter((i) => {
 			return likedCopy[restaurantsCopy.indexOf(i)];
 		});
@@ -74,30 +90,11 @@ class MainAppPage extends React.Component {
 		return likedJSON;
 	}
 
-	// query builder 
-	buildURL() {
-		// var url = 'http://localhost:9000/restaurants?cuisine[]=Japanese';
-		var url = '/restaurants?';
-		return url;
-	}
-
-	buildLikedURL(likedList) {
-		var url = '/profiles/profiles/addLikeRestaurants?';
-		likedList = likedList.join('&');
-		console.log(likedList);
-
-		url = url.concat('userName=', this.state.userName);
-		url = url.concat('&likedRestaurants=', likedList);
-
-		return url;
-	}
-
-	getPref() {
-		console.log(this.state.userName);
-		fetch('/profiles/profiles/getPreferences?userName='.concat(this.state.userName))
+	// get filters from lobby page 
+	getPref(username) {
+		fetch('/profiles/profiles/getPreferences?userName='.concat(username))
 		.then(res => res.json())
 		.then(data => {
-			console.log('prices: ' + data.preferences);
 			this.setState({ price: data.preferences })
 			this.setState({ loadingPref: false })
 			return data.preferences;
@@ -108,16 +105,14 @@ class MainAppPage extends React.Component {
 		.catch(err => err);
 	}
 
+	// get restaurant info according to preferences
     getRestaurants(pref) {
-		// set loading status
 		this.setState({ loading: true }, () => {
 
 			// get list of restaurants
-			var url = this.buildURL();
 			var data = {
 				'trim': 21,
 				'price': pref,
-				// 'price': this.state.price,
 			}
 			fetch('/restaurants?', {
 				signal: this.controller.signal,
@@ -156,20 +151,30 @@ class MainAppPage extends React.Component {
 		});
 	}
 
-	getUser() {
-		fetch('/sessions/sessions')
-		.then(res => res.json())
-		.then(data => {
-			this.setState({ userName: data.userName });
-			this.setState({ loadingUser: false });
-		});
+	// save list of liked restaurants to db
+	setLikedRestaurants() {
+		var liked = this.getLiked();
+		console.log(JSON.stringify(liked));
+
+		fetch('/profiles/profiles/addLikeRestaurants',  {
+			signal: this.controller.signal,
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(liked)
+		})
+		.catch(err => err);
 	}
 
     componentDidMount() {
 		console.log('main app page');
-		this.getUser();
-		// this.getRestaurants();
-		// this.getPref();
+		async.waterfall([
+			this.getUser,
+			this.getPref
+		], function(err) {
+			console.log(this.state.userName);
+			console.log(this.state.restaurants);
+			console.log(this.state.price);
+		});
 	}
 
 	componentWillUnmount() {
@@ -183,9 +188,8 @@ class MainAppPage extends React.Component {
 		if (this.state.loading || this.state.loadingPref || this.state.loadingUser) {		
 			return (
 				<div className='main-app'>
-					{/* <NavbarPage /> */}
-					<div className='start'>
-						<Button className={classes.root} onClick={this.getPref}>Start</Button>
+					<div className='loading'>
+						<p>loading...</p>
 					</div>
 				</div>
 			)
@@ -193,34 +197,21 @@ class MainAppPage extends React.Component {
 
 		// results page
 		if (this.state.cardIndex >= this.state.numCards - 1) {
-			console.log('results page');
-			var liked = this.getLiked();
-			console.log(JSON.stringify(liked));
 
-			fetch('/profiles/profiles/addLikeRestaurants',  {
-				signal: this.controller.signal,
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(liked)
-			})
-			.catch(err => err);
-
+			this.setLikedRestaurants();
 			this.props.history.push('/match');
 
 			return (
-				<div className="main-app">
-					<h1>results page</h1>
-					<p>to be implemented as a separate page</p>
-					<h2>matched restaurant</h2>
-					<h2>see more</h2>
-					<h2>try again</h2>
+				<div className='main-app'>
+					<div className='results'>
+						<p>loading results...</p>
+					</div>
 				</div>
 			)
 		}
 
 		// main app page
 		else { 
-			console.log(this.state.price);
 			return (
 				<div className="main-app">
 				<NavbarPage />
