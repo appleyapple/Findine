@@ -18,7 +18,7 @@ exports.addProfile = function(req, res, next) {
         userName: req.body.userName,
         partnerName: req.body.partnerName,
         ready: false,
-        preferences: [],
+        preferences: {},
         likedRestaurants: []
     };
 
@@ -70,8 +70,7 @@ exports.getLikeRestaurants= function(req, res, next) {
 exports.addLikeRestaurants= function(req, res, next) {
     var userName = req.body.userName;
     var restaurant = req.body.likedRestaurants;
-    // console.log(userName);
-    // console.log(restaurant);
+    console.log(restaurant);
 
     profiles.updateOne(
         { userName: userName},
@@ -118,13 +117,36 @@ exports.getPreferences= function(req, res, next) {
         });
 };
 
+// exports.addPreferences= function(req, res, next) {
+//     var userName = req.body.userName;
+//     var preferences = req.body.preferences;
+
+//     profiles.updateOne(
+//         { userName: userName},
+//         {"preferences": preferences},
+
+//         (err) => {
+//             if (err) return console.log(err);
+//         }
+//     );
+// };
+
 exports.addPreferences= function(req, res, next) {
     var userName = req.body.userName;
     var preferences = req.body.preferences;
+    // console.log(preferences);
 
     profiles.updateOne(
         { userName: userName},
-        {"preferences": preferences},
+        { $set: 
+            {
+                'preferences.prices' : preferences.prices,
+                'preferences.cuisines' : preferences.cuisines,
+                'preferences.rating' : preferences.rating,
+                'preferences.tags' : preferences.tags
+            }
+        },
+        { upsert: true },
 
         (err) => {
             if (err) return console.log(err);

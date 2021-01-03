@@ -16,4 +16,7 @@ router.get('/restaurants/getRestaurantById', restaurantController.getRestaurantB
 // get by body
 router.post('/restaurants/getRestaurantByName', restaurantController.getRestaurantByName);
 
+// GET request for list of cuisines
+router.get('/restaurants/cuisines', restaurantController.getCuisines);
+
 module.exports = router;

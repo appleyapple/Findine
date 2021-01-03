@@ -20,6 +20,11 @@ const useStyles = () => ({
     },
 });
 
+// const url = 'https://developers.zomato.com/api/v2.1/search?start='; // add offset 
+// const tags = '&q=breakfast%2C%20lunch%2C%20dinner';
+// const loc = '&lat=49.287968050315634&lon=-123.13003220889654';
+// const etc = '&radius=1000&sort=rating&order=desc';
+
 class MainAppPage extends React.Component {
 
 	constructor(props) {
@@ -37,7 +42,9 @@ class MainAppPage extends React.Component {
 			
 			// restaurants and filters
 			restaurants: [],
-			price: ['1', '2', '3', '4'],
+			prices: ['1', '2', '3', '4'],
+			cuisines: [],
+			meals: ['Breakfast', 'Lunch', 'Dinner'],
 			liked: [],
 
 			// misc
@@ -95,11 +102,17 @@ class MainAppPage extends React.Component {
 		fetch('/profiles/profiles/getPreferences?userName='.concat(username))
 		.then(res => res.json())
 		.then(data => {
-			this.setState({ price: data.preferences })
-			this.setState({ loadingPref: false })
+			this.setState({ prices: data.preferences.prices });
+			this.setState({ cuisines: data.preferences.cuisines });
+			this.setState({ meals: data.preferences.tags });
+			return data;
+		})
+		.then((data) => {
+			this.setState({ loadingPref: false });
 			return data.preferences;
 		})
 		.then((pref) => {
+			console.log(pref)
 			this.getRestaurants(pref);
 		})
 		.catch(err => err);
@@ -111,8 +124,10 @@ class MainAppPage extends React.Component {
 
 			// get list of restaurants
 			var data = {
-				'trim': 21,
-				'price': pref,
+				'trim': 20,
+				'price': pref.prices,
+				'cuisines': pref.cuisines,
+				'tags': pref.tags,
 			}
 			fetch('/restaurants?', {
 				signal: this.controller.signal,
@@ -145,7 +160,7 @@ class MainAppPage extends React.Component {
 				this.setState({ numCards: list.length });
 				this.setState({ restaurants: list });
 				this.setState({ loading: false });
-				console.log(this.state.restaurants);
+				// console.log(this.state.restaurants);
 			})
             .catch(err => err);
 		});
@@ -154,10 +169,9 @@ class MainAppPage extends React.Component {
 	// save list of liked restaurants to db
 	setLikedRestaurants() {
 		var liked = this.getLiked();
-		console.log(JSON.stringify(liked));
+		// console.log(JSON.stringify(liked));
 
 		fetch('/profiles/profiles/addLikeRestaurants',  {
-			signal: this.controller.signal,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(liked)
@@ -166,7 +180,7 @@ class MainAppPage extends React.Component {
 	}
 
     componentDidMount() {
-		console.log('main app page');
+		// console.log('main app page');
 		async.waterfall([
 			this.getUser,
 			this.getPref
@@ -182,7 +196,7 @@ class MainAppPage extends React.Component {
 	}
 	
     render() {
-		const {classes} = this.props;
+		// const {classes} = this.props;
 
 		// loading page
 		if (this.state.loading || this.state.loadingPref || this.state.loadingUser) {		
@@ -199,6 +213,7 @@ class MainAppPage extends React.Component {
 		if (this.state.cardIndex >= this.state.numCards - 1) {
 
 			this.setLikedRestaurants();
+
 			this.props.history.push('/match');
 
 			return (

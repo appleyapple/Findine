@@ -8,7 +8,7 @@ const restaurantModel = require('./models/restaurantModel')
 // robson st. coordinates 49.287968050315634, -123.13003220889654
 // max query results is 20
 const url = 'https://developers.zomato.com/api/v2.1/search?start=';
-const search = 'q=breakfast%2C%20lunch%2C%20dinner&start=0&lat=49.287968050315634&lon=-123.13003220889654&radius=1000&sort=rating&order=desc';
+const search = 'q=breakfast%2C%20lunch%2C%20dinner&lat=49.287968050315634&lon=-123.13003220889654&radius=1000&sort=rating&order=desc';
 const defaultImg = 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80';
 
 function restaurantCreate(name, cuisine, price, rating, highlights, img) {

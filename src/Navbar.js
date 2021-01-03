@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React/*, { useState }*/ from 'react';
 import {
-  Collapse,
+  // Collapse,
   Navbar,
-  NavbarToggler,
-  NavbarBrand,
+  // NavbarToggler,
+  // NavbarBrand,
   Nav,
   NavItem,
   NavLink
@@ -12,12 +12,12 @@ import {
 import './Navbar.css';
 
 const NavbarPage = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div id="navbar">
       <Navbar light expand="md">
-        <Collapse isOpen={isOpen} navbar>
+        {/* <Collapse isOpen={isOpen} navbar> */}
           <Nav className="mr-auto" navbar>
             <NavItem>
               <NavLink href="/lobby">Findine</NavLink>
@@ -26,7 +26,7 @@ const NavbarPage = (props) => {
               <NavLink href="/">Logout</NavLink>
             </NavItem>
           </Nav>
-        </Collapse>
+        {/* </Collapse> */}
       </Navbar>
     </div>
   );

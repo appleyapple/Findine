@@ -49,7 +49,7 @@ class LandingPage extends React.Component {
             };
 
             var reqBody = JSON.stringify(loginDetails);
-            console.log(reqBody);
+            // console.log(reqBody);
 
             var sessionDetails = {
                 'userName': this.state.userName
@@ -68,7 +68,7 @@ class LandingPage extends React.Component {
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 if (data.success) {
                     // make request to session to sessionDB
                     var urlSession = this.buildURLSession();

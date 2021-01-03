@@ -62,25 +62,22 @@ exports.restaurant_form = function(req, res, next) {
 
 // display list of restaurants with body
 exports.restaurant_body = function(req, res, next) {
-    var cuisine = req.body.cuisine;
+    var cuisines = req.body.cuisines;
     var price = req.body.price.map(Number);
+    var tags = req.body.tags;
     var trim = req.body.trim;
-    console.log(price);
-
-    // if no price is specified
-    if (!price) {
-        price = [1, 2, 3, 4];
-    } 
+    console.log(JSON.stringify(req.body));
 
     if (!trim) {
         trim = 0;
     }
 
     // if no cuisine is specified
-    if (!cuisine) {
+    if (!cuisines) {
         Restaurants
         .find({ 
-            price: { $in: price }
+            price: { $in: price },
+            highlights: { $in: tags }
         }, { name:1, cuisine:1, price:1, rating:1, highlights:1, img:1, _id:0 })
         .exec(function (err, listRestaurants) {
             if (err) {return next(err); }
@@ -96,13 +93,14 @@ exports.restaurant_body = function(req, res, next) {
             res.send(listRestaurants)
         });
     }
-    
+
     // if cuisine and price are specified
     else {
         Restaurants
         .find({ 
-            cuisine: { $in: cuisine }, // searches for all cuisines listed in cuisine array
-            price: { $in: price }
+            cuisine: { $in: cuisines }, // searches for all cuisines listed in cuisine array
+            price: { $in: price },
+            highlights: { $in: tags }
         }, { name:1, cuisine:1, price:1, rating:1, highlights:1, img:1, _id:0 })
         .exec(function (err, listRestaurants) {
             if (err) {return next(err); }
@@ -139,5 +137,14 @@ exports.getRestaurantByName = function(req, res, next) {
         .exec(function (err, returnRestList) {
             if (err) {return next(err); }
             res.send(returnRestList);
+        });
+};
+
+exports.getCuisines = function(req, res, next) {
+
+    Restaurants.distinct('cuisine')
+        .exec(function (err, returnCuisineList) {
+            if (err) {return next(err); }
+            res.send(returnCuisineList);
         });
 };

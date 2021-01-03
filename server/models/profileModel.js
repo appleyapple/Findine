@@ -19,7 +19,13 @@ profileModelSchema = new Schema({
     partnerName: { type: String, required: true, maxlength: 50 },
     ready: { type: Boolean, default: false, required: true },
     likedRestaurants: [{ type: String}],
-    preferences: [{ type: String}]
+    test: [{ type: String}],
+    preferences: {
+        prices: [{type: String}],
+        cuisines: [{type: String}],
+        ratings: [{type: String}],
+        tags: [{type: String}],
+    }
 });
 
 module.exports = mongoose.model('profileModel', profileModelSchema, 'profiles');

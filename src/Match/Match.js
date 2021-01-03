@@ -186,11 +186,11 @@ class MatchPage extends React.Component {
         
                             <div key={current.name}>
         
-                                <div class = "FirstLeft">
+                                <div className = "FirstLeft">
                                     <img className='result-image' src={current.img} />
                                 </div>
             
-                                <div class = "FirstRight">
+                                <div className = "FirstRight">
                                     <h3>{current.name}</h3>
                                     <p>Rating: {current.rating}</p>
                                     <p>Price: {'$'.repeat(this.state.restaurants[0].price)}</p>
@@ -208,11 +208,11 @@ class MatchPage extends React.Component {
                 <div className="main-app">
                     <h1>Your #1 Match!</h1>
                     <div className = "Card">
-                        <div class = "FirstLeft">
+                        <div className = "FirstLeft">
                         <img className="result-image" src={this.state.restaurants[0].img} />
                         </div>
             
-                        <div class = "FirstRight">
+                        <div className = "FirstRight">
                         <h3>{this.state.restaurants[0].name}</h3>
                         <p>Rating: {this.state.restaurants[0].rating}</p>
                         <p>Price: {'$'.repeat(this.state.restaurants[0].price)}</p>
